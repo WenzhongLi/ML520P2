@@ -64,33 +64,6 @@ class Generator(object):
                 matrix[k][j] = count_mines_around
         self.map_matrix = matrix
         return matrix
-        # i=0
-        # total_num = self.size*self.size - 2
-        # block_num = int(self.size*self.size*self.density)
-        # while(i<block_num):
-        #     target_num = random.randint(1, total_num - i)
-        #     #self.print_matrix()
-        #     #print (i,target_num,total_num +1 - i)
-        #     count = 0
-        #     finish_flag = 0
-        #     for j in range(self.size):
-        #         for k in range(self.size):
-        #             if count == target_num:
-        #                 if self.map_matrix[j][k] == 1:
-        #                     continue
-        #                 elif self.map_matrix[j][k] == 0:
-        #                     self.map_matrix[j][k] = 1
-        #                     finish_flag = 1
-        #                     break
-        #                 else:#
-        #                     print 'error'
-        #             if self.map_matrix[j][k] == 0:
-        #                 count+=1
-        #         if finish_flag == 1:
-        #             break
-        #     i+=1
-        #     finish_flag = 0
-        # random.uniform(10, 20)
 
     def get_matrix(self):
         return self.map_matrix
