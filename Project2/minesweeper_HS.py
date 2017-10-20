@@ -21,7 +21,6 @@ class MineSweeper(object):
         self.node_unchecked = None
         self.node_state = None
         self.node_to_analysis = None
-        #
 
     def solve(self, mine_map, height, weight):
         removed_list = []
@@ -45,6 +44,7 @@ class MineSweeper(object):
         # maybe remove this later
         # self.node_unchecked.remove(current_node)
         self.node_to_be_check.append(current_node)
+        # add this node to check list(check if it is mine)
         # self.node_to_be_check_index += 1
         # Start search
         # timer = 0
@@ -53,7 +53,8 @@ class MineSweeper(object):
             # timer += 1
             # print timer, removed_list
             if len(self.node_to_be_check) == 0:
-                # Get a point randomly TODO
+                # no points to be check for now
+                # Get a point randomly TODO should pick by possibility order
                 current_node = copy.copy(random.choice(self.node_unchecked))
                 self.node_state[current_node] = -3
                 self.node_to_be_check.append(current_node)
@@ -61,6 +62,7 @@ class MineSweeper(object):
                 print 'random', current_node, random_time
             print 'self.node_to_be_check', self.node_to_be_check
             for node in self.node_to_be_check:
+                # check the points in the list
                 if self.map[node[0]][node[1]] == -1:
                     # bomb!! gg =,=
                     self.node_state[current_node] = '!'
@@ -68,18 +70,22 @@ class MineSweeper(object):
                     self.moves.append(node)
                     return 0, self.moves
                 else:
+                    # this is a safe block, add information to KB
                     self.node_state[node] = self.map[node[0]][node[1]]
                     self.add_around(node)
                     self.moves.append(node)
                     removed_list.append(node)
+                    # remove this node form check list and not know list
                     # print node, self.node_unchecked
                     self.node_unchecked.remove(node)
             while 1:
+                # try to infer some safe point.
                 self.print_current()
                 self.node_to_be_check = []
                 # add current node to list
                 remove_list = []
                 print 'self.node_to_analysis', self.node_to_analysis
+                # go though all the not know point around a already knew point.
                 for node in self.node_to_analysis:
                     if self.node_state[node] != -2:
                         remove_list.append(node)
@@ -103,16 +109,22 @@ class MineSweeper(object):
                             self.node_state[node] = -3
                             self.node_to_be_check.append(node)
                 for node_need_remove in remove_list:
+                    # remove the node has add to check list
                     self.node_to_analysis.pop(node_need_remove)
                 if len(self.node_to_be_check) == 0:
+                    # if there is no point been infer form CSP
                     r = self.sub_set_analysis()
                     for node_need_remove in r[1]:
+                        # remove point if that point  is been inferred
                         self.node_to_analysis.pop(node_need_remove)
                     if len(self.node_to_be_check) != 0:
+                        # find some block is safe
                         break
                     if r[0] is True:
+                        # find some mine, see if there is a different result for CPS
                         continue
                     else:
+                        # still nothing let us go random
                         break
                 else:
                     break
@@ -333,6 +345,7 @@ class MineSweeper(object):
         return False, remove_list
 
     def add_set(self, point):
+        # add (set,number) to list. return set, number
         mine_count = self.node_state[point]
         blank_tup = ()
         if mine_count <= 0:
@@ -378,17 +391,20 @@ class MineSweeper(object):
             print '\n',
         print '\033[0m',
 
+
 if __name__ == "__main__":
     print "script_name", sys.argv[0]
     for i in range(1, len(sys.argv)):
         print "argment", i, sys.argv[i]
     print ('start initialize')
     # set the size and density of this matrix
-    generator = MineGenerator.Generator(10, 15, 0.2)
-    generator.print_matrix()
+    height = 16
+    weight = 30
+    generator = MineGenerator.Generator(height, weight, 0.2)
+    # generator.print_matrix()
     generator.paint_random()
     generator.print_matrix()
     player = MineSweeper()
-    result = player.solve(generator.get_matrix(), 10, 15)
+    result = player.solve(generator.get_matrix(), height, weight)
     print result
     print ('start over')
