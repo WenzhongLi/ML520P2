@@ -9,21 +9,21 @@ import sys
 
 class Generator(object):
     # init size and density of map
-    def __init__(self, height, weight, density):
+    def __init__(self, height, width, density):
         self.height = height
-        self.weight = weight
+        self.width = width
         self.density = density
         self.map_matrix = []
         for k in range(self.height):
             self.map_matrix.append([])
-            for j in range(self.weight):
+            for j in range(self.width):
                 self.map_matrix[k].append(0)
 
     # print map to commend line
     def print_matrix(self):
         count_blocked = 0
         for k in range(self.height):
-            for j in range(self.weight):
+            for j in range(self.width):
                 if self.map_matrix[k][j] == -1:
                     print 'x',
                 else:
@@ -35,15 +35,15 @@ class Generator(object):
 
     # paint maze randomly
     def paint_random(self):
-        matrix = [[0 for j in range(self.weight)] for k in range(self.height)]
+        matrix = [[0 for j in range(self.width)] for k in range(self.height)]
         node_list = []
         # init a set of all point could be block
         for k in range(self.height):
-            for j in range(self.weight):
+            for j in range(self.width):
                 node_list.append((k, j))
-        mine_num = int(self.height * self.weight * self.density)
-        if mine_num > self.height * self.weight:
-            mine_num = self.height * self.weight
+        mine_num = int(self.height * self.width * self.density)
+        if mine_num > self.height * self.width:
+            mine_num = self.height * self.width
         # get some point randomly
         mine_set = random.sample(node_list, mine_num)
         # Paint them 1
@@ -51,12 +51,12 @@ class Generator(object):
         for node in mine_set:
             matrix[node[0]][node[1]] = -1
         for k in range(self.height):
-            for j in range(self.weight):
+            for j in range(self.width):
                 if matrix[k][j] == -1:
                     continue
                 count_mines_around = 0
                 for direction in direction_list:
-                    if (0 <= j+direction[0] < self.weight) and (0 <= k+direction[1] < self.height):
+                    if (0 <= j+direction[0] < self.width) and (0 <= k+direction[1] < self.height):
                         if matrix[k+direction[1]][j+direction[0]] == -1:
                             count_mines_around += 1
                     else:

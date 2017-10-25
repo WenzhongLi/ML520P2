@@ -13,7 +13,7 @@ import MineGenerator_PB
 class MineSweeper(object):
     def __init__(self):
         self.height = 0
-        self.weight = 0
+        self.width = 0
         self.map = None
         self.moves = None
         self.node_to_be_check = None
@@ -23,11 +23,11 @@ class MineSweeper(object):
         self.node_to_analysis = None
         #
 
-    def solve(self, mine_map, height, weight):
+    def solve(self, mine_map, height, width):
         removed_list = []
         self.moves = []
         self.height = height
-        self.weight = weight
+        self.width = width
         self.map = mine_map
         self.node_to_be_check = []
         # self.node_to_be_check_index = -1
@@ -35,7 +35,7 @@ class MineSweeper(object):
         self.node_state = dict()
         self.node_to_analysis = dict()
         for h in range(self.height):
-            for w in range(self.weight):
+            for w in range(self.width):
                 self.node_unchecked.append((h, w))
                 self.node_state[(h, w)] = -2  # have not checked
         # get a start node
@@ -124,7 +124,7 @@ class MineSweeper(object):
         # add around node to the node_to_analysis
         direction_list = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
         for direction in direction_list:
-            if (0 <= point[1] + direction[1] < self.weight) and (0 <= point[0] + direction[0] < self.height):
+            if (0 <= point[1] + direction[1] < self.width) and (0 <= point[0] + direction[0] < self.height):
                 if self.node_state[(point[0] + direction[0], point[1] + direction[1])] == -2:
                     # add to list
                     self.node_to_analysis[(point[0] + direction[0], point[1] + direction[1])] = 1
@@ -137,7 +137,7 @@ class MineSweeper(object):
         # check sub-set for blank
         direction_list = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
         for direction in direction_list:
-            if (0 <= point[1] + direction[1] < self.weight) and (0 <= point[0] + direction[0] < self.height):
+            if (0 <= point[1] + direction[1] < self.width) and (0 <= point[0] + direction[0] < self.height):
                 current = (point[0] + direction[0], point[1] + direction[1])
                 mine_count = self.node_state[current]
                 if mine_count == -1 or mine_count == -3 or mine_count == -4:
@@ -149,7 +149,7 @@ class MineSweeper(object):
                 current_mine_count = 0
                 current_not_mine_count = 0
                 for d in direction_list:
-                    if (0 <= current[1] + d[1] < self.weight) and (0 <= current[0] + d[0] < self.height):
+                    if (0 <= current[1] + d[1] < self.width) and (0 <= current[0] + d[0] < self.height):
                         c = (current[0] + d[0], current[1] + d[1])
                         m = self.node_state[c]
                         if m == -1:
@@ -177,7 +177,7 @@ class MineSweeper(object):
         for point in self.node_to_analysis:
             direction_list = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
             for direction in direction_list:
-                if (0 <= point[1] + direction[1] < self.weight) and (0 <= point[0] + direction[0] < self.height):
+                if (0 <= point[1] + direction[1] < self.width) and (0 <= point[0] + direction[0] < self.height):
                     current = (point[0] + direction[0], point[1] + direction[1])
                     mine_count = self.node_state[current]
                     if mine_count == -1 or mine_count == -2 or mine_count == -3 or mine_count == -4:
@@ -195,7 +195,7 @@ class MineSweeper(object):
                               (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (-1, 2), (-2, 2), (-2, 1),
                               (-2, 0), (-2, -1), (-2, -2), (-1, -2), (0, -2), (1, -2), (2, -2), (2, -1)]
             for d in direction_list:
-                if (0 <= node[1] + d[1] < self.weight) and (0 <= node[0] + d[0] < self.height):
+                if (0 <= node[1] + d[1] < self.width) and (0 <= node[0] + d[0] < self.height):
                     c = (node[0] + d[0], node[1] + d[1])
                     m = self.node_state[c]
                     if m <= 0:
@@ -342,7 +342,7 @@ class MineSweeper(object):
         current_not_mine_count = 0
         direction_list = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
         for d in direction_list:
-            if (0 <= point[1] + d[1] < self.weight) and (0 <= point[0] + d[0] < self.height):
+            if (0 <= point[1] + d[1] < self.width) and (0 <= point[0] + d[0] < self.height):
                 c = (point[0] + d[0], point[1] + d[1])
                 m = self.node_state[c]
                 if m == -1:
@@ -362,7 +362,7 @@ class MineSweeper(object):
 
     def print_current(self):
         for h in range(self.height):
-            for w in range(self.weight):
+            for w in range(self.width):
                 sf = ''
                 if (h, w) in self.node_to_analysis:
                     sf = '\033[1;35m\033[0m'
@@ -388,12 +388,12 @@ if __name__ == "__main__":
     print ('start initialize')
     # set the size and density of this matrix
     height = 16
-    weight = 30
-    generator = MineGenerator_PB.Generator(height, weight, 0.13, 0.13)
+    width = 30
+    generator = MineGenerator_PB.Generator(height, width, 0.13, 0.13)
     # generator.print_matrix()
     generator.paint_random()
     generator.print_matrix()
     player = MineSweeper()
-    result = player.solve(generator.get_matrix(), height, weight)
+    result = player.solve(generator.get_matrix(), height, width)
     print result
     print ('start over')

@@ -9,22 +9,22 @@ import sys
 
 class Generator(object):
     # init size and density of map
-    def __init__(self, height, weight, density, blank_possibility):
+    def __init__(self, height, width, density, blank_possibility):
         self.height = height
-        self.weight = weight
+        self.width = width
         self.density = density
         self.blank_possibility = blank_possibility
         self.map_matrix = []
         for k in range(self.height):
             self.map_matrix.append([])
-            for j in range(self.weight):
+            for j in range(self.width):
                 self.map_matrix[k].append(0)
 
     # print map to commend line
     def print_matrix(self):
         count_blocked = 0
         for k in range(self.height):
-            for j in range(self.weight):
+            for j in range(self.width):
                 if self.map_matrix[k][j] == -1:
                     print 'x',
                 elif self.map_matrix[k][j] == -4:
@@ -38,17 +38,17 @@ class Generator(object):
 
     # paint maze randomly
     def paint_random(self):
-        matrix = [[0 for j in range(self.weight)] for k in range(self.height)]
+        matrix = [[0 for j in range(self.width)] for k in range(self.height)]
         node_list = []
         # init a set of all point could be block
         for k in range(self.height):
-            for j in range(self.weight):
+            for j in range(self.width):
                 node_list.append((k, j))
-        mine_num = int(self.height * self.weight * self.density)
-        blank_num = int(self.height * self.weight * self.blank_possibility)
+        mine_num = int(self.height * self.width * self.density)
+        blank_num = int(self.height * self.width * self.blank_possibility)
         mine_and_blank_num = mine_num + blank_num
-        if mine_and_blank_num > self.height * self.weight:
-            mine_and_blank_num = self.height * self.weight
+        if mine_and_blank_num > self.height * self.width:
+            mine_and_blank_num = self.height * self.width
         # get some point randomly
         mine_and_blank_set = random.sample(node_list, mine_and_blank_num)
         # Paint them 1
@@ -64,12 +64,12 @@ class Generator(object):
         self.map_matrix = matrix
         self.print_matrix()
         for k in range(self.height):
-            for j in range(self.weight):
+            for j in range(self.width):
                 if matrix[k][j] == -1 or matrix[k][j] == -4:
                     continue
                 count_mines_around = 0
                 for direction in direction_list:
-                    if (0 <= j+direction[0] < self.weight) and (0 <= k+direction[1] < self.height):
+                    if (0 <= j+direction[0] < self.width) and (0 <= k+direction[1] < self.height):
                         if matrix[k+direction[1]][j+direction[0]] == -1:
                             count_mines_around += 1
                     else:
