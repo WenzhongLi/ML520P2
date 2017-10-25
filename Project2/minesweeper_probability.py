@@ -14,18 +14,21 @@ class Node:
 
 class minesweeper_probability(object):
     def __init__(self):
-        self.frontier = Queue.PriorityQueue()
         self.close = dict()
 
     def __minesweeper_init(self, matrix, height, width):
-        self.ori = Node(0, 0, generator.density)
-        self.frontier.put(Node)
+        self.close[[0,0]] = matrix[0][0]
+        while True:
+            cell = [0,0]
+            self.extend_surround(cell)
+
+
 
 
     # discover the node's surrounding environment
     def extend_surround(self, q):
-        xs = [0, -1, 1, 0]
-        ys = [-1, 0, 0, 1]
+        xs = [-1,0,1,-1,1,-1,0,1]
+        ys = [-1,-1,-1,0,0,1,1,1]
         open_size = 0
         # establish new nodes by changing the given node's coordinates in 4 directions
         for xx, yy in zip(xs,ys):
