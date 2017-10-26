@@ -15,12 +15,14 @@ class Node:
 class minesweeper_probability(object):
     def __init__(self):
         self.close = dict()
+        self.frontier = dict()
 
     def __minesweeper_init(self, matrix, height, width):
         cell = [0,0]
         while True:
+            # close --> save the point already visit
             self.close[cell] = matrix[cell[0]][cell[1]]
-            next_cell = self.extend_surround(cell)
+            self.frontier = self.extend_surround(cell)
             clue = matrix[next_cell[0]][next_cell[1]]
             if clue == -1:
                 print "Fail"
@@ -32,12 +34,11 @@ class minesweeper_probability(object):
 
             # pick next blank
             for :
-
             cell = next_blank
 
 
 
-    # discover the node's surrounding environment
+    # discover the node's surrounding environment, and put into frontal
     def extend_surround(self, q):
         xs = [-1,0,1,-1,1,-1,0,1]
         ys = [-1,-1,-1,0,0,1,1,1]
