@@ -39,31 +39,22 @@ class minesweeper_probability(object):
 
     # discover the node's surrounding environment, and put into frontal
     def extend_surround(self, cell):
-        xs = [-1,0,1,-1,1,-1,0,1]
-        ys = [-1,-1,-1,0,0,1,1,1]
-        open_size = 0
+        deltaX = [-1,0,1,-1,1,-1,0,1]
+        deltaY = [-1,-1,-1,0,0,1,1,1]
+
         # establish new nodes by changing the given node's coordinates in 4 directions
-        for xx, yy in zip(xs,ys):
-            new_x,  new_y = xx + cell[0], yy + cell[1]
+        for i in range(0, 8):
+            neighborNode = (cell[0] + deltaX[i], cell[1] + deltaY[i])
 
-            #judge if the new node is valid, a valid node means the node is inside the bound and it isn't a block
-            if not self.is_valid(new_x, new_y):
+            # check the boundary, if reach boundary --> continue
+            if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
+                    >= self.size or neighborNode[0] >= self.size:
                 continue
 
-            node = Node(cell, new_x, new_y, q.distance + 1)
-            if self.close.has_key((node.x, node.y)):
+            if self.frontier.has_key(neighborNode)
                 continue
 
-            if self.open.has_key((node.x, node.y)):
-                if self.open.get((node.x, node.y)).distance > node.distance:
-                    self.open[(node.x, node.y)] = node
-                continue
-            self.open[(node.x, node.y)] = node
-
-        if open_size < len(self.open):
-            open_size = len(self.open)
-        return open_size
-
+            self.frontier[neighborNode]
 
 
 if __name__ == "__main__":
