@@ -17,11 +17,23 @@ class minesweeper_probability(object):
         self.close = dict()
 
     def __minesweeper_init(self, matrix, height, width):
-        self.close[[0,0]] = matrix[0][0]
+        cell = [0,0]
         while True:
-            cell = [0,0]
-            self.extend_surround(cell)
+            self.close[cell] = matrix[cell[0]][cell[1]]
+            next_cell = self.extend_surround(cell)
+            clue = matrix[next_cell[0]][next_cell[1]]
+            if clue == -1:
+                print "Fail"
+                break
 
+            self.close[next_cell] = clue
+
+            # traverse all key in hashmap
+
+            # pick next blank
+            for :
+
+            cell = next_blank
 
 
 
