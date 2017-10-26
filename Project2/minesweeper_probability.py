@@ -19,27 +19,25 @@ class minesweeper_probability(object):
 
     def __minesweeper_init(self, matrix, height, width):
         cell = [0,0]
+
         while True:
             # close --> save the point already visit
-            self.close[cell] = matrix[cell[0]][cell[1]]
-            self.frontier = self.extend_surround(cell)
-            clue = matrix[next_cell[0]][next_cell[1]]
+            clue = matrix[cell[0]][cell[1]]
             if clue == -1:
                 print "Fail"
                 break
 
-            self.close[next_cell] = clue
-
-            # traverse all key in hashmap
-
-            # pick next blank
-            for :
-            cell = next_blank
+            self.close[cell] = clue
+            self.frontier = self.extend_surround(cell)
+            cell = find_next(self.frontier,self.close)
 
 
+    def find_next(self, frontier):
+
+        return next_cell
 
     # discover the node's surrounding environment, and put into frontal
-    def extend_surround(self, q):
+    def extend_surround(self, cell):
         xs = [-1,0,1,-1,1,-1,0,1]
         ys = [-1,-1,-1,0,0,1,1,1]
         open_size = 0
