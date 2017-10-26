@@ -28,8 +28,9 @@ class minesweeper_probability(object):
                 break
 
             self.close[cell] = clue
-            self.frontier = self.extend_surround(cell)
+            self.extend_surround(cell)
             cell = find_next(self.frontier,self.close)
+            self.frontier.pop(cell)
 
 
     def find_next(self, frontier):
@@ -43,13 +44,13 @@ class minesweeper_probability(object):
         open_size = 0
         # establish new nodes by changing the given node's coordinates in 4 directions
         for xx, yy in zip(xs,ys):
-            new_x,  new_y = xx + q.x, yy + q.y
+            new_x,  new_y = xx + cell[0], yy + cell[1]
 
             #judge if the new node is valid, a valid node means the node is inside the bound and it isn't a block
             if not self.is_valid(new_x, new_y):
                 continue
 
-            node = Node(q, new_x, new_y, q.distance + 1)
+            node = Node(cell, new_x, new_y, q.distance + 1)
             if self.close.has_key((node.x, node.y)):
                 continue
 
@@ -62,6 +63,8 @@ class minesweeper_probability(object):
         if open_size < len(self.open):
             open_size = len(self.open)
         return open_size
+
+
 
 if __name__ == "__main__":
     print "script_name", sys.argv[0]
