@@ -23,7 +23,6 @@ class minesweeper_probability(object):
         cell = (0,0)
         while True:
             debug = [[-5 for j in range(self.width)] for k in range(self.height)]
-            # close --> save the point already visit
             clue = matrix[cell[0]][cell[1]]
             self.has_been_travelled[cell] = clue
 
@@ -36,13 +35,13 @@ class minesweeper_probability(object):
                 for j in range(self.width):
                     print(debug[i][j]),
                 print('\n'),
-
             print('\n')
 
             if clue == -1:
-                print "Fail"
+                print "Fail 1"
                 return
 
+            # close --> save the point already visit
             self.close[cell] = clue
             self.extend_surround(cell)
             if len(self.frontier) == 0:
@@ -57,7 +56,7 @@ class minesweeper_probability(object):
         for i in range(0, self.height):
             for j in range(0,self.width):
                 if matrix[i][j] != self.has_been_travelled.get((i,j)):
-                    print "Fail3"
+                    print "Fail 2"
                     return
         print "Success!"
 
@@ -65,7 +64,7 @@ class minesweeper_probability(object):
         length = len(self.frontier)
         q = Queue.Queue()
         valid_combinations = []
-        for i in product(range(-1, 0), repeat=length):
+        for i in product(range(-1, 1), repeat=length):
             q.put(i)
 
         while not q.empty():
@@ -110,9 +109,10 @@ class minesweeper_probability(object):
                 if arr[e] == 0:
                     for j in range(0, len(arr)):
                         if(j != e and arr[j] == 0):
-                            prob *= 1 - MineGenerator.Generator.density
+                            prob *= 1 - generator.density
                         if(arr[j] == -1):
-                            prob *= MineGenerator.Generator.density
+                            prob *= generator.density
+
                 query_prob += prob
                 e = e + 1
             if max_unlikely > query_prob:
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     print "script_name", sys.argv[0]
     for i in range(1, len(sys.argv)):
         print "argument", i, sys.argv[i]
-    generator = MineGenerator.Generator(10, 10, 0.1)
+    generator = MineGenerator.Generator(3, 3, 0.2)
     generator.print_matrix()
     generator.paint_random()
     generator.print_matrix()
