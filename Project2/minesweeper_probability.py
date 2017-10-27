@@ -19,12 +19,11 @@ class Node:
 class minesweeper_probability(object):
     def __init__(self):
         self.close = dict()   # inner boundary(has clue)
-        self.frontier = collections.OrderedDict()  # outer bound
-        self.has_been_travelled = dict()
+        self.frontier = collections.OrderedDict()  # outer boundary
+        self.has_been_travelled = dict() #all cells that have been uncovered
 
     def __minesweeper_init(self, matrix, height, width):
         cell = [0,0]
-
         while True:
             # close --> save the point already visit
             clue = matrix[cell[0]][cell[1]]
@@ -35,6 +34,8 @@ class minesweeper_probability(object):
             self.close[cell] = clue
             self.has_been_travelled[cell] = clue
             self.extend_surround(cell)
+            if len(self.frontier) == 0:
+
             cell = self.find_next(self.frontier,self.close)
             self.frontier.pop(cell)
 
@@ -48,6 +49,7 @@ class minesweeper_probability(object):
         for (key, value) in self.close:
             #for every cell in frontier, set its value to possible number
             combination = q.pop()
+
             j = 0
             for (k,v) in self.frontier:
                 self.frontier[k] = combination[j]
