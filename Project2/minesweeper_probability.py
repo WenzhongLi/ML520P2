@@ -98,27 +98,35 @@ class minesweeper_probability(object):
             if mark == 0:
                 valid_combinations.append(combination)
 
-        next_cell = (-1,-1)
-        max_unlikely = 1
-
+        temp_arr = []
         for (k,v) in self.frontier.items():
-            query_prob = 0
-            e = 0
-            for arr in valid_combinations:
-                prob = 1
-                if arr[e] == 0:
-                    for j in range(0, len(arr)):
-                        if(j != e and arr[j] == 0):
-                            prob *= 1 - generator.density
-                        if(arr[j] == -1):
-                            prob *= generator.density
+            temp_arr.append(k)
 
+        for i in range(0,len(temp_arr)):
+            query_prob = 0
+            for arr in valid_combinations:
+                amount_zero = 0
+                amount_one = 0
+                prob = 1
+                if arr[i] == 0:
+                    amount_zero = amount_zero + 1
+                    for j in range(0, len(arr)):
+                        if (j != i and arr[j] == 0):
+                            prob *= 1 - generator.density
+                        if (arr[j] == -1):
+                            prob *= generator.density
                 query_prob += prob
-                e = e + 1
-            if max_unlikely > query_prob:
-                max_unlikely = query_prob
-                next_cell = k
-        return next_cell
+                if arr[i] == 1:
+                    amount_one = amount_one + 1
+
+            if amount_one == len(valid_combinations):
+                self.has_been_travelled[k] = -1
+                continue
+            if amount_zero == len(valid_combinations):
+                return temp_arr[i]
+
+
+
 
     # discover the node's surrounding environment, and put into frontal
     def extend_surround(self, cell):
@@ -126,9 +134,9 @@ class minesweeper_probability(object):
         deltaY = [-1,-1,-1,0,0,1,1,1]
         # establish new nodes by changing the given node's coordinates in 4 directions
         possible = dict()
+
         for i in range(0, 8):
             neighborNode = (cell[0] + deltaX[i], cell[1] + deltaY[i])
-
             # check the boundary, if reach boundary --> continue
             if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
                     >= self.height or neighborNode[0] >= self.width:
