@@ -102,11 +102,13 @@ class minesweeper_probability(object):
         for (k,v) in self.frontier.items():
             temp_arr.append(k)
 
+        local_max = 0
+        local_cell = (-1, -1)
         for i in range(0,len(temp_arr)):
             query_prob = 0
+            amount_zero = 0
+            amount_one = 0
             for arr in valid_combinations:
-                amount_zero = 0
-                amount_one = 0
                 prob = 1
                 if arr[i] == 0:
                     amount_zero = amount_zero + 1
@@ -115,16 +117,24 @@ class minesweeper_probability(object):
                             prob *= 1 - generator.density
                         if (arr[j] == -1):
                             prob *= generator.density
-                query_prob += prob
+                        query_prob += prob
+                        if local_max < query_prob:
+                            local_max = query_prob
+                            local_cell = temp_arr[i]
                 if arr[i] == 1:
                     amount_one = amount_one + 1
-
+            print query_prob
             if amount_one == len(valid_combinations):
                 self.has_been_travelled[k] = -1
                 continue
+
             if amount_zero == len(valid_combinations):
+                print "teststst"
+                print amount_zero
+                print temp_arr[i]
                 return temp_arr[i]
 
+        return local_cell
 
 
 
