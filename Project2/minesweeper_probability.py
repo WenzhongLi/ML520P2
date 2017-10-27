@@ -21,8 +21,13 @@ class minesweeper_probability(object):
         self.close = dict()   # inner boundary(has clue)
         self.frontier = collections.OrderedDict()  # outer boundary
         self.has_been_travelled = dict() #all cells that have been uncovered
+        self.matrix = generator.map_matrix
+        self.width = 0
+        self.height = 0
 
-    def __minesweeper_init(self, matrix, height, width):
+    def minesweeper_init(self, matrix, height, width):
+        self.width = width
+        self.height = height
         deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
         deltaY = [-1, -1, -1, 0, 0, 1, 1, 1]
         cell = [0,0]
