@@ -8,14 +8,6 @@ import collections
 from itertools import product
 
 
-
-class Node:
-    def __init__(self, x, y, priority):
-        self.x = x
-        self.y = y
-        self.priority = priority
-
-
 class minesweeper_probability(object):
     def __init__(self):
         self.close = dict()   # inner boundary(has clue)
@@ -58,6 +50,8 @@ class minesweeper_probability(object):
         while not q.empty():
             combination = q.pop()
             j = 0
+            mark = 0
+
             for (k,v) in self.frontier:
                 self.frontier[k] = combination[j]
                 j = j + 1
@@ -67,10 +61,11 @@ class minesweeper_probability(object):
                 deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
                 deltaY = [-1, -1, -1, 0, 0, 1, 1, 1]
                 sum = 0
+
                 for i in range(0, 8):
                     neighborNode = (self.key[0] + deltaX[i],self.key[1] + deltaY[i])
                     if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
-                            >= self.size or neighborNode[0] >= self.size:
+                            >= self.height or neighborNode[0] >= self.width:
                         continue
                     if self.has_been_travelled.has_key(neighborNode):
                         continue
@@ -78,25 +73,29 @@ class minesweeper_probability(object):
                         sum += self.frontier.get(neighborNode)
 
                 if sum != value:
+                    mark = 1
                     break
-
-            valid_combinations.append(combination)
+            if mark == 0:
+                valid_combinations.append(combination)
 
 
 
         next_cell = [-1,-1]
         max_unlikely = 1
+
         for (k,v) in self.frontier:
             query_prob = 0
+            e = 0
             for arr in valid_combinations:
                 prob = 1
-                if arr[i] == 0:
+                if arr[e] == 0:
                     for j in range(0, len(arr)):
-                        if(j != i and arr[j] == 0):
+                        if(j != e and arr[j] == 0):
                             prob *= 1 - MineGenerator.Generator.density
                         if(arr[j] == -1):
                             prob *= MineGenerator.Generator.density
                 query_prob += prob
+                e = e + 1
             if max_unlikely > query_prob:
                 max_unlikely = query_prob
                 next_cell = k
@@ -113,7 +112,7 @@ class minesweeper_probability(object):
 
             # check the boundary, if reach boundary --> continue
             if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
-                    >= self.size or neighborNode[0] >= self.size:
+                    >= self.height or neighborNode[0] >= self.width:
                 continue
 
             if self.has_been_travelled.has_key(neighborNode):
