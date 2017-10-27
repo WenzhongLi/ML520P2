@@ -46,44 +46,61 @@ class minesweeper_probability(object):
     def find_next(self):
         length = len(self.frontier)
         q = Queue.Queue()
+        valid_combinations = []
         for i in product(range(-1, 0), repeat=length):
             q.put(i)
 
-        for (key, value) in self.close:
-            #for every cell in frontier, set its value to possible number
+        while not q.empty():
             combination = q.pop()
-
             j = 0
             for (k,v) in self.frontier:
                 self.frontier[k] = combination[j]
                 j = j + 1
 
-            deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
-            deltaY = [-1, -1, -1, 0, 0, 1, 1, 1]
-            sum = 0
-            for i in range(0, 8):
-                neighborNode = (self.key[0] + deltaX[i], self.key[1] + deltaY[i])
-                if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
-                        >= self.size or neighborNode[0] >= self.size:
-                    continue
-                if self.has_been_travelled.has_key(neighborNode):
-                    continue
-                if self.frontier.has_key(neighborNode):
-                    sum += self.frontier.get(neighborNode)
-            if sum != value:
-                break
+            for (key, value) in self.close:
+                #for every cell in frontier, set its value to possible number
+                deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
+                deltaY = [-1, -1, -1, 0, 0, 1, 1, 1]
+                sum = 0
+                for i in range(0, 8):
+                    neighborNode = (self.key[0] + deltaX[i],self.key[1] + deltaY[i])
+                    if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
+                            >= self.size or neighborNode[0] >= self.size:
+                        continue
+                    if self.has_been_travelled.has_key(neighborNode):
+                        continue
+                    if self.frontier.has_key(neighborNode):
+                        sum += self.frontier.get(neighborNode)
+
+                if sum != value:
+                    break
+
+            valid_combinations.append(combination)
 
 
 
-
-        next_cell = [1,1]
+        next_cell = [-1,-1]
+        max_unlikely = 1
+        for (k,v) in self.frontier:
+            query_prob = 0
+            for arr in valid_combinations:
+                prob = 1
+                if arr[i] == 0:
+                    for j in range(0, len(arr)):
+                        if(j != i and arr[j] == 0):
+                            prob *= 1 - MineGenerator.Generator.density
+                        if(arr[j] == -1):
+                            prob *= MineGenerator.Generator.density
+                query_prob += prob
+            if max_unlikely > query_prob:
+                max_unlikely = query_prob
+                next_cell = k
         return next_cell
 
     # discover the node's surrounding environment, and put into frontal
     def extend_surround(self, cell):
         deltaX = [-1,0,1,-1,1,-1,0,1]
         deltaY = [-1,-1,-1,0,0,1,1,1]
-
         # establish new nodes by changing the given node's coordinates in 4 directions
         possible = dict()
         for i in range(0, 8):
