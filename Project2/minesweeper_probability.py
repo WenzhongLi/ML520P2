@@ -20,31 +20,30 @@ class minesweeper_probability(object):
     def minesweeper_init(self, matrix, height, width):
         self.width = width
         self.height = height
-        cell = [0,0]
+        cell = (0,0)
         while True:
             # close --> save the point already visit
             clue = matrix[cell[0]][cell[1]]
             if clue == -1:
                 print "Fail"
-                break
+                return
 
             self.close[cell] = clue
             self.has_been_travelled[cell] = clue
             self.extend_surround(cell)
             if len(self.frontier) == 0:
-                cell = [0][generator.width]
+                cell = (0,generator.width - 1)
             else:
-                cell = self.find_next(self.frontier,self.close)
+                cell = self.find_next()
                 self.frontier.pop(cell)
 
             if len(self.has_been_travelled) == self.height * self.width:
-                print "abc"
                 break
 
         for i in range(0, self.height):
             for j in range(0,self.width):
-                if matrix[i][j] != self.has_been_travelled[(i,j)]:
-                    print "Fail"
+                if matrix[i][j] != self.has_been_travelled.get((i,j)):
+                    print "Fail3"
                     return
         print "Success!"
 
@@ -56,22 +55,22 @@ class minesweeper_probability(object):
             q.put(i)
 
         while not q.empty():
-            combination = q.pop()
+            combination = q.get()
             j = 0
             mark = 0
 
-            for (k,v) in self.frontier:
+            for (k,v) in self.frontier.items():
                 self.frontier[k] = combination[j]
                 j = j + 1
 
-            for (key, value) in self.close:
+            for (key, value) in self.close.items():
                 #for every cell in frontier, set its value to possible number
                 deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
                 deltaY = [-1, -1, -1, 0, 0, 1, 1, 1]
                 sum = 0
 
                 for i in range(0, 8):
-                    neighborNode = (self.key[0] + deltaX[i],self.key[1] + deltaY[i])
+                    neighborNode = (key[0] + deltaX[i],key[1] + deltaY[i])
                     if neighborNode[0] < 0 or neighborNode[1] < 0 or neighborNode[1] \
                             >= self.height or neighborNode[0] >= self.width:
                         continue
@@ -86,12 +85,10 @@ class minesweeper_probability(object):
             if mark == 0:
                 valid_combinations.append(combination)
 
-
-
-        next_cell = [-1,-1]
+        next_cell = (-1,-1)
         max_unlikely = 1
 
-        for (k,v) in self.frontier:
+        for (k,v) in self.frontier.items():
             query_prob = 0
             e = 0
             for arr in valid_combinations:
