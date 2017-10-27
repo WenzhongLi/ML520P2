@@ -4,6 +4,8 @@
 import sys
 import MineGenerator
 import Queue
+from itertools import product
+
 
 class Node:
     def __init__(self, x, y, priority):
@@ -14,8 +16,9 @@ class Node:
 
 class minesweeper_probability(object):
     def __init__(self):
-        self.close = dict()
-        self.frontier = dict()
+        self.close = dict()   # inner boundary(has clue)
+        self.frontier = dict()  # outer bound
+        self.node_hasbeen_travel = dict()
 
     def __minesweeper_init(self, matrix, height, width):
         cell = [0,0]
@@ -34,6 +37,11 @@ class minesweeper_probability(object):
 
 
     def find_next(self, frontier):
+        set
+
+        len = 3
+        for i in product(range(2), repeat=len):
+            print i
 
         return next_cell
 
