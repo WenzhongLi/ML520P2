@@ -20,8 +20,6 @@ class minesweeper_probability(object):
     def minesweeper_init(self, matrix, height, width):
         self.width = width
         self.height = height
-        deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
-        deltaY = [-1, -1, -1, 0, 0, 1, 1, 1]
         cell = [0,0]
         while True:
             # close --> save the point already visit
@@ -39,6 +37,16 @@ class minesweeper_probability(object):
                 cell = self.find_next(self.frontier,self.close)
                 self.frontier.pop(cell)
 
+            if len(self.has_been_travelled) == self.height * self.width:
+                print "abc"
+                break
+
+        for i in range(0, self.height):
+            for j in range(0,self.width):
+                if matrix[i][j] != self.has_been_travelled[(i,j)]:
+                    print "Fail"
+                    return
+        print "Success!"
 
     def find_next(self):
         length = len(self.frontier)
@@ -130,7 +138,7 @@ if __name__ == "__main__":
     print "script_name", sys.argv[0]
     for i in range(1, len(sys.argv)):
         print "argument", i, sys.argv[i]
-    generator = MineGenerator.Generator(10, 10, 0.3)
+    generator = MineGenerator.Generator(10, 10, 0.1)
     generator.print_matrix()
     generator.paint_random()
     generator.print_matrix()
