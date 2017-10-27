@@ -22,14 +22,28 @@ class minesweeper_probability(object):
         self.height = height
         cell = (0,0)
         while True:
+            debug = [[-5 for j in range(self.width)] for k in range(self.height)]
             # close --> save the point already visit
             clue = matrix[cell[0]][cell[1]]
+            self.has_been_travelled[cell] = clue
+
+            for i in range(0, self.width - 1):
+                for j in range(0, self.height - 1):
+                    if self.has_been_travelled.has_key((i,j)):
+                        debug[i][j] = self.has_been_travelled.get((i,j))
+            #print debug
+            for i in range(self.height):
+                for j in range(self.width):
+                    print(debug[i][j]),
+                print('\n'),
+
+            print('\n')
+
             if clue == -1:
                 print "Fail"
                 return
 
             self.close[cell] = clue
-            self.has_been_travelled[cell] = clue
             self.extend_surround(cell)
             if len(self.frontier) == 0:
                 cell = (0,generator.width - 1)
