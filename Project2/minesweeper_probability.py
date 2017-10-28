@@ -25,7 +25,8 @@ class minesweeper_probability(object):
             debug = [[-5 for j in range(self.width)] for k in range(self.height)]
             clue = matrix[cell[0]][cell[1]]
             self.has_been_travelled[cell] = clue
-
+            print clue
+            print matrix[cell[0]][cell[1]]
             for i in range(0, self.width - 1):
                 for j in range(0, self.height - 1):
                     if self.has_been_travelled.has_key((i,j)):
@@ -76,6 +77,7 @@ class minesweeper_probability(object):
                 self.frontier[k] = combination[j]
                 j = j + 1
 
+
             for (key, value) in self.close.items():
                 #for every cell in frontier, set its value to possible number
                 deltaX = [-1, 0, 1, -1, 1, -1, 0, 1]
@@ -117,21 +119,18 @@ class minesweeper_probability(object):
                             prob *= 1 - generator.density
                         if (arr[j] == -1):
                             prob *= generator.density
-                        query_prob += prob
-                        if local_max < query_prob:
-                            local_max = query_prob
-                            local_cell = temp_arr[i]
+                    query_prob += prob
+
+                    if local_max < query_prob:
+                        local_max = query_prob
+                        local_cell = temp_arr[i]
                 if arr[i] == 1:
                     amount_one = amount_one + 1
-            print query_prob
+
             if amount_one == len(valid_combinations):
                 self.has_been_travelled[k] = -1
-                continue
 
             if amount_zero == len(valid_combinations):
-                print "teststst"
-                print amount_zero
-                print temp_arr[i]
                 return temp_arr[i]
 
         return local_cell
