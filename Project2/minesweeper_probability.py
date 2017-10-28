@@ -22,13 +22,16 @@ class minesweeper_probability(object):
         self.height = height
         cell = (0,0)
         while True:
-            debug = [[-5 for j in range(self.width)] for k in range(self.height)]
+
             clue = matrix[cell[0]][cell[1]]
+            # close --> save the point already visit
+            self.close[cell] = clue
+            self.extend_surround(cell)
             self.has_been_travelled[cell] = clue
-            print clue
-            print matrix[cell[0]][cell[1]]
-            for i in range(0, self.width - 1):
-                for j in range(0, self.height - 1):
+
+            debug = [['B' for j in range(self.width)] for k in range(self.height)]
+            for i in range(0, self.width):
+                for j in range(0, self.height):
                     if self.has_been_travelled.has_key((i,j)):
                         debug[i][j] = self.has_been_travelled.get((i,j))
             #print debug
@@ -42,16 +45,14 @@ class minesweeper_probability(object):
                 print "Fail 1"
                 return
 
-            # close --> save the point already visit
-            self.close[cell] = clue
-            self.extend_surround(cell)
+
             if len(self.frontier) == 0:
                 cell = (0,generator.width - 1)
             else:
                 cell = self.find_next()
                 self.frontier.pop(cell)
 
-            if len(self.has_been_travelled) == self.height * self.width:
+            if len(self.close)+len(self.frontier) == self.height * self.width:
                 break
 
         for i in range(0, self.height):
@@ -65,8 +66,12 @@ class minesweeper_probability(object):
         length = len(self.frontier)
         q = Queue.Queue()
         valid_combinations = []
-        for i in product(range(-1, 1), repeat=length):
-            q.put(i)
+        if length < 2 :
+            q.put([0])
+            q.put([1])
+        else:
+            for i in product(range(-1, 1), repeat=length):
+                q.put(i)
 
         while not q.empty():
             combination = q.get()
@@ -92,7 +97,7 @@ class minesweeper_probability(object):
                     if self.has_been_travelled.has_key(neighborNode):
                         continue
                     if self.frontier.has_key(neighborNode):
-                        sum += self.frontier.get(neighborNode)
+                        sum += (-self.frontier.get(neighborNode))
 
                 if sum != value:
                     mark = 1
@@ -142,7 +147,7 @@ class minesweeper_probability(object):
         deltaX = [-1,0,1,-1,1,-1,0,1]
         deltaY = [-1,-1,-1,0,0,1,1,1]
         # establish new nodes by changing the given node's coordinates in 4 directions
-        possible = dict()
+        # possible = dict()
 
         for i in range(0, 8):
             neighborNode = (cell[0] + deltaX[i], cell[1] + deltaY[i])
@@ -154,19 +159,20 @@ class minesweeper_probability(object):
             if self.has_been_travelled.has_key(neighborNode):
                 continue
 
-            possible[neighborNode] = -1
+            self.frontier[neighborNode] = 1
+            # possible[neighborNode] = -1
 
-        if len(possible) ==  self.close.get(cell):
-            self.has_been_travelled = dict(self.has_been_travelled.items() + possible.items())
-        else:
-            self.frontier = dict(self.frontier.items() + possible.items())
+        # if len(possible) == self.close.get(cell):
+        #     self.has_been_travelled = dict(self.has_been_travelled.items() + possible.items())
+        # else:
+        #     self.frontier = dict(self.frontier.items() + possible.items())
 
 
 if __name__ == "__main__":
     print "script_name", sys.argv[0]
     for i in range(1, len(sys.argv)):
         print "argument", i, sys.argv[i]
-    generator = MineGenerator.Generator(3, 3, 0.2)
+    generator = MineGenerator.Generator(10, 10, 0.2)
     generator.print_matrix()
     generator.paint_random()
     generator.print_matrix()
