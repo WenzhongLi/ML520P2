@@ -58,6 +58,30 @@ class MineSweeper(object):
         self.block_unchecked = None
         self.KB = ['c', ]
 
+    def solve(self):
+        self.block_to_be_uncover.append([random.randint(0, self.height - 1), random.randint(0, self.width - 1)])
+        for i in range(0, len(self.block_to_be_uncover)):
+            self.uncover_block(self.block_to_be_uncover[i])
+        printmap(self.current_map, 1)
+        #print 'Block to be analysis', self.block_to_be_analysis
+        while (1):
+            self.analysis()
+            self.search()
+            for i in range(0, len(self.block_to_be_uncover)):
+                self.uncover_block(self.block_to_be_uncover[i])
+            all_value_in_current_map = []
+            for i in range(len(self.current_map)):
+                for j in range(len(self.current_map[i])):
+                    all_value_in_current_map.append(copy.copy(self.current_map[i][j]))
+            if -2 not in all_value_in_current_map:
+                printmap(self.current_map, 1)
+                print 'finish!!!!!!!'
+                exit()
+
+
+
+        #self.analysis()    # generate KB
+
     def get_map(self, matrix):
         self.map = copy.deepcopy(matrix)
         self.height = len(self.map)
@@ -116,8 +140,41 @@ class MineSweeper(object):
 
             self.KB.append(['d'])    # each time analysis a block, and a 'V' branch to 2ed level
             around = self.get_around_block(block)
+            count_mines_already_shown = 0
 
-            comb = list(itertools.combinations(around, self.map[block[0]][block[1]]))
+            if (0 <= block[0] - 1 < self.height and 0 <= block[1] - 1 < self.width and self.current_map[block[0] - 1][
+                    block[1] - 1] != -2):
+                if self.current_map[block[0] - 1][block[1] - 1]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] - 1 < self.height and 0 <= block[1] < self.width and self.current_map[block[0] - 1][
+                block[1]] != -2):
+                if self.current_map[block[0] - 1][block[1]]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] - 1 < self.height and 0 <= block[1] + 1 < self.width and self.current_map[block[0] - 1][
+                    block[1] + 1] == -2):
+                if self.current_map[block[0] - 1][block[1] + 1]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] < self.height and 0 <= block[1] - 1 < self.width and self.current_map[block[0]][
+                    block[1] - 1] == -2):
+                if self.current_map[block[0]][block[1] - 1]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] < self.height and 0 <= block[1] + 1 < self.width and self.current_map[block[0]][
+                    block[1] + 1] == -2):
+                if self.current_map[block[0]][block[1] + 1]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] + 1 < self.height and 0 <= block[1] - 1 < self.width and self.current_map[block[0] + 1][
+                    block[1] - 1] == -2):
+                if self.current_map[block[0] + 1][block[1] - 1]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] + 1 < self.height and 0 <= block[1] < self.width and self.current_map[block[0] + 1][
+                block[1]] == -2):
+                if self.current_map[block[0] + 1][block[1]]  == -1:
+                    count_mines_already_shown += 1
+            if (0 <= block[0] + 1 < self.height and 0 <= block[1] + 1 < self.width and self.current_map[block[0] + 1][
+                    block[1] + 1] == -2):
+                if self.current_map[block[0] + 1][block[1] + 1]  == -1:
+                    count_mines_already_shown += 1
+            comb = list(itertools.combinations(around, self.map[block[0]][block[1]-count_mines_already_shown]))
 
             append_position_3 = len(self.KB) - 1   # where to insert the branch at 3rd level
             for i in range(0, len(comb)):
@@ -146,7 +203,9 @@ class MineSweeper(object):
             if len(around) != 0:
                 self.block_to_be_analysis.append(copy.copy(temp_block_to_be_analysis[i]))
 
+    # use all combinations generate by block_to_be_analysis, use it to search the KB
     def search(self):
+        printmap(self.current_map, 1)
         truth_table = []  # reserve suitable combination
         value_table = []  # compare truth table reserve the certain value
         # generate block_to_be_check delete the block which are already uncovered
@@ -203,6 +262,7 @@ class MineSweeper(object):
         if len(value_table) == 0:        # if no new information. over
             printmap(self.current_map, 1)
             print 'No solution, pick up a new block'
+            exit()
             self.block_to_be_check = []
             for i in range(len(self.current_map)):
                 for j in range(len(self.current_map[i])):
@@ -220,29 +280,6 @@ class MineSweeper(object):
                 self.current_map[value_table[i][0]][value_table[i][1]] = -1
         printmap(self.current_map, 1)
 
-    def solve(self):
-        self.block_to_be_uncover.append([random.randint(0, self.height - 1), random.randint(0, self.width - 1)])
-        for i in range(0, len(self.block_to_be_uncover)):
-            self.uncover_block(self.block_to_be_uncover[i])
-        printmap(self.current_map, 1)
-        #print 'Block to be analysis', self.block_to_be_analysis
-        while (1):
-            self.analysis()
-            self.search()
-            for i in range(0, len(self.block_to_be_uncover)):
-                self.uncover_block(self.block_to_be_uncover[i])
-            all_value_in_current_map = []
-            for i in range(len(self.current_map)):
-                for j in range(len(self.current_map[i])):
-                    all_value_in_current_map.append(copy.copy(self.current_map[i][j]))
-            if -2 not in all_value_in_current_map:
-                printmap(self.current_map, 1)
-                print 'finish!!!!!!!'
-                exit()
-
-
-
-        #self.analysis()    # generate KB
 
 if __name__ == "__main__":
     minesweeper = MineSweeper()
