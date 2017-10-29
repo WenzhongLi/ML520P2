@@ -92,8 +92,8 @@ class MineSweeper(object):
         # print 'uncover block', block
         if self.map[block[0]][block[1]] == -1:
             print block
-            print 'failfailfailfailfailfailfailfailfailfailfailfailfailfailfailfail'
-            exit()
+            print 'fail'
+            #exit()
         elif self.map[block[0]][block[1]] == 0:
             self.current_map[block[0]][block[1]] = copy.copy(self.map[block[0]][block[1]])
             around_block = self.get_around_block(block)
@@ -144,23 +144,23 @@ class MineSweeper(object):
 
             if (0 <= block[0] - 1 < self.height and 0 <= block[1] - 1 < self.width and self.current_map[block[0] - 1][
                     block[1] - 1] != -2):
-                if self.current_map[block[0] - 1][block[1] - 1]  == -1:
+                if self.current_map[block[0] - 1][block[1] - 1] == -1:
                     count_mines_already_shown += 1
             if (0 <= block[0] - 1 < self.height and 0 <= block[1] < self.width and self.current_map[block[0] - 1][
                 block[1]] != -2):
-                if self.current_map[block[0] - 1][block[1]]  == -1:
+                if self.current_map[block[0] - 1][block[1]] == -1:
                     count_mines_already_shown += 1
             if (0 <= block[0] - 1 < self.height and 0 <= block[1] + 1 < self.width and self.current_map[block[0] - 1][
                     block[1] + 1] == -2):
-                if self.current_map[block[0] - 1][block[1] + 1]  == -1:
+                if self.current_map[block[0] - 1][block[1] + 1] == -1:
                     count_mines_already_shown += 1
             if (0 <= block[0] < self.height and 0 <= block[1] - 1 < self.width and self.current_map[block[0]][
                     block[1] - 1] == -2):
-                if self.current_map[block[0]][block[1] - 1]  == -1:
+                if self.current_map[block[0]][block[1] - 1] == -1:
                     count_mines_already_shown += 1
             if (0 <= block[0] < self.height and 0 <= block[1] + 1 < self.width and self.current_map[block[0]][
                     block[1] + 1] == -2):
-                if self.current_map[block[0]][block[1] + 1]  == -1:
+                if self.current_map[block[0]][block[1] + 1] == -1:
                     count_mines_already_shown += 1
             if (0 <= block[0] + 1 < self.height and 0 <= block[1] - 1 < self.width and self.current_map[block[0] + 1][
                     block[1] - 1] == -2):
@@ -174,7 +174,7 @@ class MineSweeper(object):
                     block[1] + 1] == -2):
                 if self.current_map[block[0] + 1][block[1] + 1]  == -1:
                     count_mines_already_shown += 1
-            comb = list(itertools.combinations(around, self.map[block[0]][block[1]-count_mines_already_shown]))
+            comb = list(itertools.combinations(around, self.map[block[0]][block[1]]-count_mines_already_shown))
 
             append_position_3 = len(self.KB) - 1   # where to insert the branch at 3rd level
             for i in range(0, len(comb)):
@@ -262,7 +262,7 @@ class MineSweeper(object):
         if len(value_table) == 0:        # if no new information. over
             printmap(self.current_map, 1)
             print 'No solution, pick up a new block'
-            exit()
+            #exit()
             self.block_to_be_check = []
             for i in range(len(self.current_map)):
                 for j in range(len(self.current_map[i])):
@@ -283,7 +283,7 @@ class MineSweeper(object):
 
 if __name__ == "__main__":
     minesweeper = MineSweeper()
-    map_ = MineGenerator.Generator(8, 8, 0.1)
+    map_ = MineGenerator.Generator(8, 8, 0.2)
     map_.paint_random()
     minesweeper.get_map(map_.map_matrix)
     printmap(minesweeper.map, 0)
