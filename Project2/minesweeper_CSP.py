@@ -92,8 +92,8 @@ class MineSweeper(object):
         # print 'uncover block', block
         if self.map[block[0]][block[1]] == -1:
             print block
-            print 'fail'
-            #exit()
+            print '-------------------------fail-----------------------------------'
+            exit()
         elif self.map[block[0]][block[1]] == 0:
             self.current_map[block[0]][block[1]] = copy.copy(self.map[block[0]][block[1]])
             around_block = self.get_around_block(block)
